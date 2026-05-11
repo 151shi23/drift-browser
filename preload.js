@@ -271,4 +271,47 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('plugin-disabled', handler);
     return () => ipcRenderer.removeListener('plugin-disabled', handler);
   },
+
+  // ---- 云盘存储 ----
+  cloudAuthStatus: () => ipcRenderer.invoke('cloud:auth-status'),
+  cloudAuthPat: (token) => ipcRenderer.invoke('cloud:auth-pat', token),
+  cloudAuthOAuthStart: () => ipcRenderer.invoke('cloud:auth-oauth-start'),
+  cloudAuthOAuthCallback: (code) => ipcRenderer.invoke('cloud:auth-oauth-callback', code),
+  cloudLogout: () => ipcRenderer.invoke('cloud:logout'),
+  cloudCreateGroup: (name, useNewRepo) => ipcRenderer.invoke('cloud:create-group', name, useNewRepo),
+  cloudDeleteGroup: (groupId, deleteRepo) => ipcRenderer.invoke('cloud:delete-group', groupId, deleteRepo),
+  cloudListGroups: () => ipcRenderer.invoke('cloud:list-groups'),
+  cloudListFiles: (groupId, filePath) => ipcRenderer.invoke('cloud:list-files', groupId, filePath || '/'),
+  cloudUpload: (groupId, localPath, remotePath, mode) => ipcRenderer.invoke('cloud:upload', groupId, localPath, remotePath, mode),
+  cloudDownload: (groupId, remotePath, localPath) => ipcRenderer.invoke('cloud:download', groupId, remotePath, localPath),
+  cloudDeleteFile: (groupId, filePath) => ipcRenderer.invoke('cloud:delete-file', groupId, filePath),
+  cloudCreateFolder: (groupId, folderPath) => ipcRenderer.invoke('cloud:create-folder', groupId, folderPath),
+  cloudShareFile: (groupId, filePath) => ipcRenderer.invoke('cloud:share-file', groupId, filePath),
+  cloudSelectFolder: () => ipcRenderer.invoke('cloud:select-folder'),
+  cloudSelectFile: () => ipcRenderer.invoke('cloud:select-file'),
+  cloudSyncStart: (syncId) => ipcRenderer.invoke('cloud:sync-start', syncId),
+  cloudSyncStatus: () => ipcRenderer.invoke('cloud:sync-status'),
+  cloudAddSyncFolder: (groupId, localPath) => ipcRenderer.invoke('cloud:add-sync-folder', groupId, localPath),
+  cloudRemoveSyncFolder: (syncId) => ipcRenderer.invoke('cloud:remove-sync-folder', syncId),
+  cloudStorageInfo: (groupId) => ipcRenderer.invoke('cloud:storage-info', groupId),
+  cloudSearchFiles: (groupId, query) => ipcRenderer.invoke('cloud:search-files', groupId, query),
+  cloudFileInfo: (groupId, filePath) => ipcRenderer.invoke('cloud:file-info', groupId, filePath),
+  cloudFileContent: (groupId, filePath) => ipcRenderer.invoke('cloud:file-content', groupId, filePath),
+  cloudPreviewUrl: (groupId, filePath) => ipcRenderer.invoke('cloud:preview-url', groupId, filePath),
+
+  onCloudUploadProgress: (cb) => {
+    const handler = (_, data) => cb(data);
+    ipcRenderer.on('cloud:upload-progress', handler);
+    return () => ipcRenderer.removeListener('cloud:upload-progress', handler);
+  },
+  onCloudDownloadProgress: (cb) => {
+    const handler = (_, data) => cb(data);
+    ipcRenderer.on('cloud:download-progress', handler);
+    return () => ipcRenderer.removeListener('cloud:download-progress', handler);
+  },
+  onCloudSyncProgress: (cb) => {
+    const handler = (_, data) => cb(data);
+    ipcRenderer.on('cloud:sync-progress', handler);
+    return () => ipcRenderer.removeListener('cloud:sync-progress', handler);
+  },
 });

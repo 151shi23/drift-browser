@@ -14,6 +14,7 @@ const networkController = require('./network-controller');
 const { getResourceData } = require('./resource-monitor');
 const updater = require('./updater');
 const pluginLoader = require('./plugin-loader');
+const cloudManager = require('./cloud-manager');
 
 // 扩展 Popup 窗口引用
 let popupWindow = null;
@@ -68,6 +69,7 @@ function registerAllHandlers() {
   registerAPGHandlers();
   registerUpdaterHandlers();
   registerPluginHandlers();
+  registerCloudHandlers();
 
   // ---- 窗口控制 ----
   ipcMain.on('window-minimize', (event) => {
@@ -1396,6 +1398,147 @@ function registerAPGHandlers() {
       blockLevel: networkController.getCurrentLevel(),
       maxProcesses: processController.getCurrentMaxProcesses()
     };
+  });
+}
+
+function registerCloudHandlers() {
+  const { getMainWindow } = require('./window-manager');
+
+  ipcMain.handle('cloud:auth-status', async () => {
+    try { return cloudManager.getAuthStatus(); }
+    catch (e) { return { authenticated: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:auth-pat', async (event, token) => {
+    try { return await cloudManager.authenticatePat(token); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:auth-oauth-start', async () => {
+    try { return await cloudManager.startOAuth(); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:auth-oauth-callback', async (event, code) => {
+    try { return await cloudManager.handleOAuthCallback(code); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:logout', async () => {
+    try { return cloudManager.logout(); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:create-group', async (event, name, useNewRepo) => {
+    try { return await cloudManager.createGroup(name, useNewRepo); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:delete-group', async (event, groupId, deleteRepo) => {
+    try { return await cloudManager.deleteGroup(groupId, deleteRepo); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:list-groups', async () => {
+    try { return cloudManager.listGroups(); }
+    catch (e) { return { success: false, groups: [], error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:list-files', async (event, groupId, filePath) => {
+    try { return await cloudManager.listFiles(groupId, filePath); }
+    catch (e) { return { success: false, files: [], error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:upload', async (event, groupId, localPath, remotePath, mode) => {
+    try {
+      return await cloudManager.uploadFile(groupId, localPath, remotePath, mode || 'auto', function(progress) {
+        var win = getMainWindow();
+        if (win) win.webContents.send('cloud:upload-progress', progress);
+      });
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  });
+
+  ipcMain.handle('cloud:download', async (event, groupId, remotePath, localPath) => {
+    try {
+      return await cloudManager.downloadFile(groupId, remotePath, localPath, function(progress) {
+        var win = getMainWindow();
+        if (win) win.webContents.send('cloud:download-progress', progress);
+      });
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  });
+
+  ipcMain.handle('cloud:delete-file', async (event, groupId, filePath) => {
+    try { return await cloudManager.deleteCloudFile(groupId, filePath); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:create-folder', async (event, groupId, folderPath) => {
+    try { return await cloudManager.createFolder(groupId, folderPath); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:share-file', async (event, groupId, filePath) => {
+    try { return await cloudManager.shareFile(groupId, filePath); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:sync-start', async (event, syncId) => {
+    try { return await cloudManager.syncFolder(syncId); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:sync-status', async () => {
+    try { return cloudManager.getSyncStatus(); }
+    catch (e) { return { success: false, syncFolders: [], error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:add-sync-folder', async (event, groupId, localPath) => {
+    try { return cloudManager.addSyncFolder(groupId, localPath); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:remove-sync-folder', async (event, syncId) => {
+    try { return cloudManager.removeSyncFolder(syncId); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:select-folder', async () => {
+    try { return await cloudManager.selectFolder(); }
+    catch (e) { return { canceled: true }; }
+  });
+
+  ipcMain.handle('cloud:select-file', async () => {
+    try { return await cloudManager.selectFile(); }
+    catch (e) { return { canceled: true }; }
+  });
+
+  ipcMain.handle('cloud:storage-info', async (event, groupId) => {
+    try { return await cloudManager.getStorageInfo(groupId); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:search-files', async (event, groupId, query) => {
+    try { return await cloudManager.searchFiles(groupId, query); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:file-info', async (event, groupId, filePath) => {
+    try { return await cloudManager.getFileInfo(groupId, filePath); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:file-content', async (event, groupId, filePath) => {
+    try { return await cloudManager.getFileContent(groupId, filePath); }
+    catch (e) { return { success: false, error: e.message }; }
+  });
+
+  ipcMain.handle('cloud:preview-url', async (event, groupId, filePath) => {
+    try { return await cloudManager.getPreviewUrl(groupId, filePath); }
+    catch (e) { return { success: false, error: e.message }; }
   });
 }
 

@@ -10,6 +10,7 @@ const { handleAuthProtocol, registerAuthHandlers } = require('./main/auth-bridge
 const { startMonitor: startResourceMonitor } = require('./main/resource-monitor');
 const { initUpdater } = require('./main/updater');
 const { initPluginLoader, injectRendererPlugins } = require('./main/plugin-loader');
+const { initCloudManager } = require('./main/cloud-manager');
 
 // ==================== 单实例锁 ====================
 const gotTheLock = app.requestSingleInstanceLock();
@@ -191,6 +192,9 @@ app.whenReady().then(async () => {
 
   // 4. 创建窗口
   createWindow();
+
+  // 4.1 初始化云盘管理器
+  initCloudManager(getMainWindow());
 
   // 5. 注册 IPC 处理器
   registerAllHandlers();

@@ -45,6 +45,7 @@ yarn-error.log*
 # IDE / 编辑器
 .vscode/
 .idea/
+.trae/
 *.swp
 *.swo
 *~
