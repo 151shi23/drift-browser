@@ -785,6 +785,11 @@ document.addEventListener('keydown', function(e) {
 });
 
 (async function init() {
+  // 初始化更新检查（必须在启动时注册事件监听）
+  if (window.FBrowser && window.FBrowser.updater && window.FBrowser.updater.init) {
+    window.FBrowser.updater.init();
+  }
+
   // 首次启动检查：显示欢迎页（每次启动都播放动画，仅首次显示教程）
   if (window.DriftWelcome) {
     window.DriftWelcome.init();
