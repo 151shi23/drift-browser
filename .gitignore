@@ -1,21 +1,64 @@
+# ==================== Drift Browser .gitignore ====================
+
+# 依赖
 node_modules/
+package-lock.json
+
+# 构建产物
 dist/
 out/
-.env
-.env.*
-*.log
-*.pem
-*.key
-*.cert
-*.p12
-*.pfx
-Thumbs.db
-.DS_Store
-desktop.ini
+build/
 *.exe
 *.msi
 *.dmg
 *.deb
 *.AppImage
 *.snap
-package-lock.json
+blockmap
+
+# 环境与密钥（绝对不能提交）
+.env
+.env.*
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+
+# 用户数据（运行时生成，存在 %APPDATA%）
+*.db
+*.sqlite
+*.sqlite3
+sessions/
+history/
+cache/
+cookies/
+local-storage/
+config.json
+
+# 日志
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE / 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+.projectiledev
+
+# 子项目/临时目录
+docforge-electron/
+tmp/
+temp/
+
+# OS 文件
+.DS_Store
+Thumbs.db
+desktop.ini
