@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
+  <title>性能监视器 - Drift 浏览器</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg-0:#0c0c10;--bg-1:#121218;--bg-2:#1a1a22;
+      --fg-0:#e8e8ed;--fg-1:#a0a0a8;--fg-2:#606068;
+      --accent:#4A90D9;--accent2:#6C5CE7;--border:#252530;
+      --green:#22c55e;
+    }
+    [data-theme="light"]{
+      --bg-0:#f5f5f7;--bg-1:#ffffff;--bg-2:#e8e8ed;
+      --fg-0:#1a1a1a;--fg-1:#4a4a4a;--fg-2:#8a8a8a;
+      --border:#d1d1d6;
+    }
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      background:var(--bg-0);color:var(--fg-0);
+      min-height:100vh;display:flex;flex-direction:column;
+    }
+    .header{
+      background:var(--bg-1);border-bottom:1px solid var(--border);
+      padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+      -webkit-app-region:drag;
+    }
+    .header h1{font-size:14px;font-weight:600}
+    .header-actions{-webkit-app-region:no-drag;display:flex;gap:8px}
+    .btn{
+      padding:6px 12px;border-radius:6px;border:none;
+      background:var(--bg-2);color:var(--fg-1);font-size:12px;cursor:pointer;
+      transition:all 0.15s;
+    }
+    .btn:hover{background:var(--accent);color:#fff}
+    .content{flex:1;overflow-y:auto;padding:16px}
+    .perf-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+    .perf-card{
+      background:var(--bg-1);border-radius:10px;padding:14px;
+      border:1px solid var(--border);
+    }
+    .perf-card-header{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:12px;font-size:12px;color:var(--fg-2);
+    }
+    .perf-card-value{font-size:22px;font-weight:600;color:var(--accent)}
+    .perf-chart{
+      height:80px;background:var(--bg-2);border-radius:8px;
+      position:relative;overflow:hidden;
+    }
+    .perf-chart-bar{
+      position:absolute;bottom:0;width:6px;
+      background:linear-gradient(to top,var(--accent),rgba(74,144,217,0.3));
+      border-radius:2px 2px 0 0;transition:height 0.3s;
+    }
+    .perf-info{display:flex;flex-direction:column;gap:6px}
+    .perf-info-row{
+      display:flex;justify-content:space-between;padding:6px 10px;
+      background:var(--bg-2);border-radius:6px;font-size:12px;
+    }
+    .perf-info-row span:first-child{color:var(--fg-2)}
+    .perf-info-row span:last-child{color:var(--fg-0);font-weight:500}
+    .perf-info-row .frozen{color:var(--green)}
+    .status-good{color:var(--green)}
+    .status-warning{color:#f59e0b}
+    .status-danger{color:#ef4444}
+  </style>
+</head>
+<body data-theme="dark">
+<script>
+  // 同步初始化主题（避免闪烁）
+  const { ipcRenderer } = require('electron');
+  ipcRenderer.invoke('get-theme').then(theme => {
+    document.body.dataset.theme = theme;
+  }).catch(() => {});
+</script>
+<div class="header">
+    <h1>性能监视器</h1>
+    <div class="header-actions">
+      <button class="btn" id="refreshBtn">刷新</button>
+      <button class="btn" id="closeBtn">关闭窗口</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="perf-grid">
+      <div class="perf-card">
+        <div class="perf-card-header">
+          <span>CPU 使用率</span>
+          <span class="perf-card-value" id="cpuValue">--%</span>
+        </div>
+        <div class="perf-chart" id="cpuChart"></div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-card-header">
+          <span>内存使用</span>
+          <span class="perf-card-value" id="memoryValue">-- MB</span>
+        </div>
+        <div class="perf-chart" id="memoryChart"></div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-card-header">
+          <span>标签页</span>
+          <span class="perf-card-value" id="tabsValue">0</span>
+        </div>
+        <div class="perf-info">
+          <div class="perf-info-row">
+            <span>活跃标签</span>
+            <span id="activeTabs">0</span>
+          </div>
+          <div class="perf-info-row">
+            <span>后台标签</span>
+            <span id="backgroundTabs">0</span>
+          </div>
+          <div class="perf-info-row" id="frozenRow" style="display:none">
+            <span>已冻结</span>
+            <span id="frozenTabs" class="frozen">0</span>
+          </div>
+        </div>
+      </div>
+      <div class="perf-card">
+        <div class="perf-card-header">
+          <span>系统信息</span>
+        </div>
+        <div class="perf-info">
+          <div class="perf-info-row">
+            <span>平台</span>
+            <span id="platform">--</span>
+          </div>
+          <div class="perf-info-row">
+            <span>Electron</span>
+            <span id="electron">--</span>
+          </div>
+          <div class="perf-info-row">
+            <span>Chrome</span>
+            <span id="chrome">--</span>
+          </div>
+          <div class="perf-info-row">
+            <span>Node</span>
+            <span id="node">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+    
+    let cpuHistory = [];
+    let memoryHistory = [];
+    const MAX_HISTORY = 30;
+    
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      window.close();
+    });
+    
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      loadPerformance();
+    });
+    
+    function renderChart(containerId, data, maxValue) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      const width = container.offsetWidth;
+      const barWidth = 6;
+      const gap = 3;
+      const count = Math.floor(width / (barWidth + gap));
+      
+      const visibleData = data.slice(-count);
+      const actualMax = Math.max(maxValue, Math.max(...visibleData, 1));
+      
+      visibleData.forEach((val, i) => {
+        const bar = document.createElement('div');
+        bar.className = 'perf-chart-bar';
+        bar.style.left = (i * (barWidth + gap)) + 'px';
+        bar.style.height = Math.max(2, (val / actualMax) * 100) + '%';
+        container.appendChild(bar);
+      });
+    }
+    
+    function getCpuStatusClass(cpuVal) {
+      if (cpuVal < 30) return 'status-good';
+      if (cpuVal < 70) return 'status-warning';
+      return 'status-danger';
+    }
+    
+    function getMemoryStatusClass(memVal) {
+      if (memVal < 500) return 'status-good';
+      if (memVal < 1000) return 'status-warning';
+      return 'status-danger';
+    }
+    
+    async function loadPerformance() {
+      try {
+        const data = await ipcRenderer.invoke('get-performance-data');
+        if (!data) {
+          document.getElementById('cpuValue').textContent = '无数据';
+          return;
+        }
+        
+        // 解析 CPU 值
+        const cpuVal = parseInt(data.cpu) || 0;
+        const memVal = parseInt(data.memory) || 0;
+        
+        // 更新 CPU
+        const cpuEl = document.getElementById('cpuValue');
+        cpuEl.textContent = data.cpu || '--%';
+        cpuEl.className = 'perf-card-value ' + getCpuStatusClass(cpuVal);
+        
+        // 更新内存
+        const memEl = document.getElementById('memoryValue');
+        memEl.textContent = data.memory || '-- MB';
+        memEl.className = 'perf-card-value ' + getMemoryStatusClass(memVal);
+        
+        // 更新标签页
+        document.getElementById('tabsValue').textContent = data.tabs || 0;
+        document.getElementById('activeTabs').textContent = data.activeTabs || 0;
+        document.getElementById('backgroundTabs').textContent = data.backgroundTabs || 0;
+        
+        // 冻结标签
+        const frozenTabs = data.frozenTabs || 0;
+        const frozenRow = document.getElementById('frozenRow');
+        if (frozenTabs > 0) {
+          frozenRow.style.display = 'flex';
+          document.getElementById('frozenTabs').textContent = frozenTabs;
+        } else {
+          frozenRow.style.display = 'none';
+        }
+        
+        // 系统信息
+        if (data.system) {
+          document.getElementById('platform').textContent = data.system.platform || '--';
+          document.getElementById('electron').textContent = data.system.electron || '--';
+          document.getElementById('chrome').textContent = data.system.chrome || '--';
+          document.getElementById('node').textContent = data.system.node || '--';
+        }
+        
+        // 更新图表
+        cpuHistory.push(cpuVal);
+        memoryHistory.push(memVal);
+        
+        if (cpuHistory.length > MAX_HISTORY) cpuHistory.shift();
+        if (memoryHistory.length > MAX_HISTORY) memoryHistory.shift();
+        
+        renderChart('cpuChart', cpuHistory, 100);
+        renderChart('memoryChart', memoryHistory, Math.max(...memoryHistory, 100));
+        
+      } catch (e) {
+        console.error('[Performance] 加载失败:', e);
+      }
+    }
+    
+    loadPerformance();
+    setInterval(loadPerformance, 1000);
+  </script>
+</body>
+</html>

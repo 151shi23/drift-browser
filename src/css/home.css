@@ -1,0 +1,263 @@
+/* ==================== 主页 - 震撼版 ==================== */
+#homePage{
+  background:var(--bg-0);
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  display:none;
+}
+#homePage.active{display:flex;animation:homeEnter 0.5s cubic-bezier(0.16,1,0.3,1) both}
+@keyframes homeEnter{
+  from{opacity:0;transform:scale(0.97);filter:blur(4px)}
+  to{opacity:1;transform:scale(1);filter:blur(0)}
+}
+
+/* 流光背景 */
+.home-bg{
+  position:absolute;inset:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+.orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:.35;
+  animation:orbFloat 20s ease-in-out infinite;
+}
+.orb-1{
+  width:500px;height:500px;
+  background:radial-gradient(circle,var(--accent) 0%,transparent 70%);
+  top:-10%;left:-5%;
+  animation-delay:0s;
+}
+.orb-2{
+  width:400px;height:400px;
+  background:radial-gradient(circle,var(--accent2) 0%,transparent 70%);
+  bottom:-10%;right:-5%;
+  animation-delay:-7s;
+  animation-duration:25s;
+}
+.orb-3{
+  width:300px;height:300px;
+  background:radial-gradient(circle,#e84057 0%,transparent 70%);
+  top:40%;left:50%;
+  transform:translate(-50%,-50%);
+  animation-delay:-14s;
+  animation-duration:30s;
+  opacity:.2;
+}
+.noise{
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size:128px 128px;
+  opacity:.5;
+}
+
+/* 鼠标聚光 */
+.home-spotlight{
+  position:absolute;
+  width:600px;height:600px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(74,144,217,0.12) 0%,rgba(108,92,231,0.06) 30%,transparent 70%);
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  transition:left .3s ease-out,top .3s ease-out,opacity .4s;
+  z-index:0;
+  opacity:0;
+}
+.home-spotlight.visible{opacity:1}
+[data-theme="light"] .home-spotlight{
+  background:radial-gradient(circle,rgba(74,144,217,0.06) 0%,rgba(108,92,231,0.03) 30%,transparent 70%);
+}
+[data-theme="light"] .orb{opacity:.15;filter:blur(100px)}
+[data-theme="light"] .noise{opacity:.3}
+
+@keyframes orbFloat{
+  0%,100%{transform:translate(0,0) scale(1)}
+  25%{transform:translate(60px,-40px) scale(1.1)}
+  50%{transform:translate(-30px,60px) scale(.95)}
+  75%{transform:translate(-50px,-30px) scale(1.05)}
+}
+.orb-3{animation-name:orbFloat3}
+@keyframes orbFloat3{
+  0%,100%{transform:translate(-50%,-50%) scale(1)}
+  25%{transform:translate(calc(-50% + 80px),calc(-50% - 50px)) scale(1.15)}
+  50%{transform:translate(calc(-50% - 40px),calc(-50% + 70px)) scale(.9)}
+  75%{transform:translate(calc(-50% - 60px),calc(-50% - 40px)) scale(1.08)}
+}
+
+/* 主页内容 */
+.home-inner{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  gap:40px;
+  padding:0 24px;
+  width:100%;max-width:660px;
+}
+
+/* 时钟 */
+.home-clock-area{text-align:center}
+.home-time{
+  font-size:120px;
+  font-weight:200;
+  letter-spacing:-6px;
+  line-height:1;
+  background:linear-gradient(135deg,var(--fg-0) 30%,var(--accent));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:timeShimmer 6s ease-in-out infinite;
+}
+@keyframes timeShimmer{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+.home-date{
+  font-size:14px;
+  color:var(--fg-2);
+  margin-top:8px;
+  letter-spacing:2px;
+  animation:fadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+.home-greeting{
+  font-size:15px;
+  color:var(--fg-1);
+  margin-top:4px;
+  font-weight:300;
+  letter-spacing:4px;
+  animation:fadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+}
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* 搜索框 */
+.home-search-box{
+  display:flex;align-items:center;gap:10px;
+  width:100%;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;
+  padding:0 18px;
+  height:54px;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  position:relative;overflow:hidden;
+  animation:searchBoxIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+}
+.home-search-box::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(100,80,220,0.05),transparent);
+  opacity:0;transition:opacity 0.3s;pointer-events:none;
+}
+.home-search-box:hover::before{opacity:1}
+@keyframes searchBoxIn{
+  from{opacity:0;transform:translateY(20px) scale(0.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+[data-theme="light"] .home-search-box{
+  background:rgba(255,255,255,0.7);
+  border-color:rgba(0,0,0,0.06);
+}
+.home-search-box:focus-within{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px var(--accent-dim),0 8px 40px rgba(0,0,0,0.15);
+  transform:translateY(-2px);
+}
+.home-search-box:focus-within::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  animation:focusWave 1.5s ease-out infinite;
+}
+@keyframes focusWave{
+  0%{transform:scaleX(0);opacity:0}
+  50%{transform:scaleX(1);opacity:1}
+  100%{transform:scaleX(1.5);opacity:0}
+}
+.home-search-box svg{color:var(--fg-2);flex-shrink:0;transition:all 0.3s}
+.home-search-box:focus-within svg{color:var(--accent);transform:scale(1.1)}
+.home-search-box input{
+  flex:1;border:none;background:none;outline:none;
+  font-size:16px;padding:0;
+  -webkit-user-select:text;user-select:text;
+  color:var(--fg-0);
+}
+.home-engine{
+  font-size:12px;
+  color:var(--fg-2);
+  padding:4px 12px;
+  border-radius:8px;
+  background:var(--glass);
+  cursor:pointer;
+  transition:all .2s cubic-bezier(0.34,1.56,0.64,1);
+  flex-shrink:0;
+  position:relative;overflow:hidden;
+}
+.home-engine:hover{background:var(--accent);color:#fff;transform:translateY(-1px) scale(1.05)}
+.home-engine:active{transform:scale(0.95)}
+
+/* 快捷站点 */
+.home-sites{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  width:100%;
+}
+.home-site{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding:18px 8px 14px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:all .25s cubic-bezier(0.34,1.56,0.64,1);
+  background:transparent;
+  position:relative;overflow:hidden;
+  animation:siteIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
+}
+.home-site:nth-child(1){animation-delay:0.3s}
+.home-site:nth-child(2){animation-delay:0.35s}
+.home-site:nth-child(3){animation-delay:0.4s}
+.home-site:nth-child(4){animation-delay:0.45s}
+.home-site:nth-child(5){animation-delay:0.5s}
+.home-site:nth-child(6){animation-delay:0.55s}
+.home-site:nth-child(7){animation-delay:0.6s}
+.home-site:nth-child(8){animation-delay:0.65s}
+@keyframes siteIn{
+  from{opacity:0;transform:translateY(20px) scale(0.95)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.home-site:hover{
+  background:rgba(255,255,255,0.05);
+  transform:translateY(-4px);
+}
+.home-site:active{transform:scale(0.95)}
+.home-site::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(circle at center,rgba(100,80,220,0.15),transparent 70%);
+  opacity:0;transition:opacity 0.3s;pointer-events:none;
+}
+.home-site:hover::after{opacity:1}
+[data-theme="light"] .home-site:hover{background:rgba(0,0,0,0.03)}
+.home-site-icon{
+  width:48px;height:48px;
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;color:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  transition:all .3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.home-site:hover .home-site-icon{
+  box-shadow:0 8px 24px rgba(0,0,0,0.25);
+  transform:scale(1.08) rotate(-3deg);
+}
+.home-site-name{
+  font-size:11px;
+  color:var(--fg-2);
+  text-align:center;
+  transition:color 0.2s;
+}
+.home-site:hover .home-site-name{color:var(--fg-0)}
+
+

@@ -1,0 +1,14 @@
+{
+  "id": "com.drift.english-i18n",
+  "name": "English Language Pack",
+  "version": "1.0.0",
+  "description": "English internationalization for Drift Browser",
+  "author": "Drift Team",
+  "type": ["i18n"],
+  "permissions": ["i18n", "storage"],
+  "renderer": "renderer.js",
+  "i18n": "locales/",
+  "icon": "",
+  "minVersion": "2.33.0",
+  "dependencies": []
+}

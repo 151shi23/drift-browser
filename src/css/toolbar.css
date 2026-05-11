@@ -1,0 +1,230 @@
+/* ==================== 工具栏 ==================== */
+#toolbar{height:var(--bar-h);background:var(--bg-1);display:flex;align-items:center;padding:0 8px;gap:6px;border-bottom:1px solid var(--border);position:relative;z-index:10}
+#toolbar::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--accent) 50%,transparent 100%);
+  opacity:0;transition:opacity 0.5s;pointer-events:none;
+}
+#toolbar.loading::after{opacity:0.3;animation:toolbarGlow 2s ease-in-out infinite}
+@keyframes toolbarGlow{
+  0%,100%{opacity:0.1;transform:scaleX(0.3)}
+  50%{opacity:0.4;transform:scaleX(1)}
+}
+
+.nav-group{display:flex;gap:1px;align-items:center}
+.tool-btn{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius);color:var(--fg-1);
+  transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  position:relative;overflow:hidden;
+}
+.tool-btn:hover{background:var(--glass-hover);color:var(--fg-0);transform:translateY(-1px)}
+.tool-btn:active{transform:scale(0.88);transition-duration:0.1s}
+.tool-btn.bookmarked svg path{fill:var(--accent);stroke:var(--accent)}
+.tool-btn::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(circle at center,rgba(255,255,255,0.15),transparent 70%);
+  opacity:0;transition:opacity 0.3s;pointer-events:none;
+}
+.tool-btn:active::after{opacity:1;animation:btnRipple 0.4s cubic-bezier(0.4,0,0.2,1)}
+@keyframes btnRipple{from{transform:scale(0);opacity:0.5}to{transform:scale(2.5);opacity:0}}
+
+.url-wrapper{
+  flex:1;display:flex;align-items:center;gap:6px;
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:18px;padding:0 12px;height:34px;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  position:relative;overflow:hidden;
+}
+.url-wrapper::before{
+  content:'';position:absolute;inset:-1px;border-radius:inherit;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  opacity:0;z-index:-1;transition:opacity 0.3s;
+}
+.url-wrapper:focus-within{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-dim),0 4px 16px rgba(74,144,217,0.1);
+  transform:translateY(-1px);
+}
+.url-wrapper:focus-within::before{opacity:0.1}
+.url-wrapper:focus-within .url-lock{color:var(--accent);transform:scale(1.1)}
+.url-lock{flex-shrink:0;color:var(--fg-2);transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1)}
+.url-input{flex:1;border:none;background:none;outline:none;font-size:13px;color:var(--fg-0);padding:0;-webkit-user-select:text;user-select:text}
+.url-input::placeholder{color:var(--fg-2);transition:opacity 0.3s}
+.url-wrapper:focus-within .url-input::placeholder{opacity:0.5}
+
+/* 菜单下拉 */
+.menu-wrapper{position:relative}
+.menu-dropdown{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:var(--bg-2);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,.35);
+  padding:4px;min-width:220px;max-width:320px;
+  z-index:100;display:none;
+  transform-origin:top right;
+}
+.menu-dropdown.open{display:block;animation:menuSlideIn 0.2s cubic-bezier(0.16,1,0.3,1)}
+@keyframes menuSlideIn{
+  from{opacity:0;transform:scale(0.95) translateY(-8px);filter:blur(4px)}
+  to{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}
+}
+.menu-item{
+  display:flex;align-items:center;gap:10px;
+  width:100%;padding:9px 14px;border-radius:6px;
+  color:var(--fg-1);font-size:13px;
+  transition:all 0.15s cubic-bezier(0.34,1.56,0.64,1);cursor:pointer;
+  border:none;background:none;text-align:left;
+  position:relative;
+}
+.menu-item:hover{background:var(--glass-hover);color:var(--fg-0);transform:translateX(4px)}
+.menu-item:active{transform:scale(0.98)}
+.menu-item svg{flex-shrink:0;opacity:.85;transition:all 0.2s}
+.menu-item:hover svg{opacity:1;transform:scale(1.1)}
+
+/* ---- 子菜单（更多工具二级菜单） ---- */
+.menu-submenu{position:relative}
+.menu-submenu>.menu-item{justify-content:space-between}
+.menu-arrow{
+  flex-shrink:0;opacity:.4;transition:all .2s;
+  transform:rotate(0deg);
+}
+.menu-submenu:hover>.menu-item .menu-arrow{opacity:1;transform:rotate(90deg)}
+.menu-sub-dropdown{
+  position:fixed;
+  background:var(--bg-2);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,.35);
+  padding:4px;min-width:210px;max-width:300px;
+  z-index:99999;display:none;
+}
+
+/* 菜单分隔线 */
+.menu-sep{height:1px;background:var(--border);margin:4px 8px}
+
+/* 缩放控制行 */
+.zoom-row{justify-content:center;gap:6px!important;padding:5px 14px!important}
+.zoom-btn{
+  width:24px;height:24px;border-radius:50%;
+  border:1px solid var(--border);background:var(--bg-0);
+  color:var(--fg-0);font-size:15px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .12s;flex-shrink:0;
+}
+.zoom-btn:hover{background:var(--glass-hover);border-color:var(--accent)}
+.zoom-label{
+  font-size:12px;color:var(--fg-2);min-width:42px;text-align:center;
+  font-weight:500;font-variant-numeric:tabular-nums;
+}
+
+/* ==================== 扩展工具栏 ==================== */
+.ext-toolbar{display:flex;align-items:center;gap:1px;margin:0 2px;max-width:240px;overflow:hidden}
+.ext-icon-btn{
+  width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius);transition:background .12s;cursor:pointer;
+  flex-shrink:0;position:relative;
+}
+.ext-icon-btn:hover{background:var(--glass-hover)}
+.ext-icon-btn:active{transform:scale(.93)}
+.ext-icon-btn img{width:18px;height:18px;object-fit:contain;pointer-events:none}
+/* 扩展无图标时的默认占位 */
+.ext-icon-btn .ext-icon-fallback{
+  width:18px;height:18px;border-radius:4px;background:var(--bg-3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:var(--fg-2);
+}
+/* 活跃指示器（扩展在当前页面生效） */
+.ext-icon-btn.active::after{
+  content:'';position:absolute;bottom:2px;right:2px;
+  width:5px;height:5px;border-radius:50%;background:var(--accent);
+}
+
+/* 扩展菜单 */
+.ext-menu-wrapper{position:relative}
+.ext-menu-dropdown{
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:var(--bg-2);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,.35);
+  padding:4px;min-width:240px;max-width:320px;
+  z-index:100;display:none;max-height:400px;overflow-y:auto;
+}
+.ext-menu-dropdown.open{display:block}
+.ext-menu-dropdown .ext-menu-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px 4px;font-size:11px;color:var(--fg-2);
+  font-weight:600;text-transform:uppercase;letter-spacing:0.5px;
+}
+.ext-menu-dropdown .ext-menu-header a{
+  font-size:11px;color:var(--accent);cursor:pointer;text-decoration:none;
+}
+.ext-menu-dropdown .ext-menu-header a:hover{text-decoration:underline}
+.ext-menu-item{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:8px 12px;border-radius:6px;color:var(--fg-1);
+  font-size:13px;transition:background .12s;cursor:pointer;
+}
+.ext-menu-item:hover{background:var(--glass-hover);color:var(--fg-0)}
+.ext-menu-item img{width:20px;height:20px;object-fit:contain;flex-shrink:0}
+.ext-menu-item .ext-menu-item-info{flex:1;min-width:0}
+.ext-menu-item .ext-menu-item-name{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ext-menu-item .ext-menu-item-ver{font-size:10px;color:var(--fg-2)}
+.ext-menu-item .ext-menu-item-remove{
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  border-radius:4px;color:var(--fg-2);opacity:0;transition:all .12s;flex-shrink:0;
+}
+.ext-menu-item:hover .ext-menu-item-remove{opacity:1}
+.ext-menu-item .ext-menu-item-remove:hover{background:rgba(232,64,87,0.15);color:var(--red)}
+.ext-menu-sep{height:1px;background:var(--border);margin:4px 8px}
+
+.vpn-indicator{position:relative}
+.vpn-indicator.vpn-active{color:var(--accent)}
+.vpn-indicator.vpn-active svg path{stroke:var(--accent)}
+.vpn-indicator::before{
+  content:'';position:absolute;bottom:1px;right:1px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--fg-3);border:1.5px solid var(--bg-1);
+  transition:background 0.3s;
+}
+.vpn-indicator.vpn-active::before{background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,0.5)}
+.vpn-indicator.vpn-error::before{background:var(--red)}
+@keyframes vpnPulse{0%,100%{box-shadow:0 0 6px rgba(34,197,94,0.5)}50%{box-shadow:0 0 12px rgba(34,197,94,0.8)}}
+.vpn-indicator.vpn-active::before{animation:vpnPulse 2s ease-in-out infinite}
+
+/* ==================== 地址栏右键菜单（Edge 风格）==================== */
+.url-bar-menu{
+  position:fixed;z-index:99999;
+  background:var(--bg-2);border:1px solid var(--border);
+  border-radius:8px;box-shadow:0 10px 36px rgba(0,0,0,.38),0 2px 8px rgba(0,0,0,.18);
+  padding:5px;min-width:210px;max-width:320px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  animation:ubm-in .15s ease-out;
+}
+@keyframes ubm-in{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+/* 菜单项 */
+.ubm-item{
+  display:flex;align-items:center;padding:7px 14px;border-radius:6px;
+  cursor:pointer;font-size:13px;color:var(--fg-0);white-space:nowrap;
+  transition:background .12s;position:relative;
+}
+.ubm-item:hover{background:rgba(59,130,246,0.08);color:var(--fg-0)}
+.ubm-item.disabled{
+  color:var(--fg-3);cursor:not-allowed;pointer-events:none;
+}
+.ubm-label{flex:1;line-height:1.4}
+
+/* 分隔线 */
+.ubm-sep{height:1px;background:var(--border);margin:4px 8px}
+
+/* 子菜单 */
+.ubm-item.has-sub::after{
+  content:'▸';position:absolute;right:12px;top:50%;
+  transform:translateY(-50%);font-size:11px;color:var(--fg-2);
+}
+.ubm-item.has-sub:hover::after{color:var(--accent)}
+.ubm-sub{
+  position:absolute;left:100%;top:0;margin-left:2px;
+  background:var(--bg-2);border:1px solid var(--border);
+  border-radius:8px;box-shadow:0 8px 28px rgba(0,0,0,.32);
+  padding:5px;min-width:170px;display:block;
+  animation:ubm-in .12s ease-out;
+}
+.ubm-sub .ubm-item{padding:6px 12px;font-size:12px}

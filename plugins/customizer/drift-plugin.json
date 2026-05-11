@@ -1,0 +1,13 @@
+{
+  "id": "com.drift.customizer",
+  "name": "个性化浏览器",
+  "version": "1.0.0",
+  "description": "自定义浏览器外观：背景、颜色、布局、CSS",
+  "author": "Drift Team",
+  "type": ["ui", "feature"],
+  "permissions": ["ui", "storage", "theme", "settings"],
+  "renderer": "renderer.js",
+  "i18n": "locales/",
+  "minVersion": "2.33.0",
+  "dependencies": []
+}

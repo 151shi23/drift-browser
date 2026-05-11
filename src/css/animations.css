@@ -1,0 +1,244 @@
+/* ==================== 系统级全局动画 ==================== */
+
+/* ---- 缓动曲线系统 ---- */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quad: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---- 全局页面切换容器 ---- */
+#contentArea {
+  perspective: 1000px;
+}
+
+/* ---- 标签页动画 ---- */
+.tab-item {
+  transition: all 0.25s var(--ease-out-expo);
+}
+.tab-item {
+  animation: tabSlideIn 0.3s var(--ease-out-expo) both;
+}
+@keyframes tabSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.9);
+    max-width: 0;
+    min-width: 0;
+    padding: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+.tab-item.closing {
+  animation: tabSlideOut 0.2s var(--ease-smooth) forwards;
+}
+@keyframes tabSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    max-width: 180px;
+    min-width: 80px;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px) scale(0.8);
+    max-width: 0;
+    min-width: 0;
+    padding: 0;
+  }
+}
+
+/* ---- 按钮全局微交互 ---- */
+button, .btn, [role="button"] {
+  transition: all 0.2s var(--ease-bounce);
+  position: relative;
+  overflow: hidden;
+}
+button:hover, .btn:hover, [role="button"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+button:active, .btn:active, [role="button"]:active {
+  transform: scale(0.95);
+  transition-duration: 0.1s;
+}
+
+/* ---- 输入框全局增强 ---- */
+input[type="text"], input[type="search"], textarea {
+  transition: all 0.3s var(--ease-out-expo);
+}
+input[type="text"]:focus, input[type="search"]:focus, textarea:focus {
+  transform: translateY(-1px);
+}
+
+/* ---- 滚动增强 ---- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+::-webkit-scrollbar-thumb:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ---- 选择框动画 ---- */
+::selection {
+  background: rgba(74, 144, 217, 0.3);
+  color: inherit;
+}
+
+/* ---- 加载状态全局指示器 ---- */
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spinAnim 0.8s linear infinite;
+}
+@keyframes spinAnim {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- 脉冲动画 ---- */
+.pulse {
+  animation: pulseAnim 2s ease-in-out infinite;
+}
+@keyframes pulseAnim {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ---- 闪烁动画（加载/连接中）---- */
+.blink {
+  animation: blinkAnim 1s step-end infinite;
+}
+@keyframes blinkAnim {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ---- 抖动动画（错误提示）---- */
+.shake {
+  animation: shakeAnim 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+@keyframes shakeAnim {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+/* ---- 缩放进入动画 ---- */
+.zoom-in {
+  animation: zoomInAnim 0.3s var(--ease-out-expo) both;
+}
+@keyframes zoomInAnim {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---- 缩放退出动画 ---- */
+.zoom-out {
+  animation: zoomOutAnim 0.2s var(--ease-smooth) both;
+}
+@keyframes zoomOutAnim {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+/* ---- 滑入动画（从底部）---- */
+.slide-up-in {
+  animation: slideUpInAnim 0.4s var(--ease-out-expo) both;
+}
+@keyframes slideUpInAnim {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- 滑入动画（从顶部）---- */
+.slide-down-in {
+  animation: slideDownInAnim 0.3s var(--ease-out-expo) both;
+}
+@keyframes slideDownInAnim {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- 淡入淡出 ---- */
+.fade-in {
+  animation: fadeInAnim 0.3s var(--ease-smooth) both;
+}
+@keyframes fadeInAnim {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-out {
+  animation: fadeOutAnim 0.2s var(--ease-smooth) both;
+}
+@keyframes fadeOutAnim {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* ---- 全局过渡效果优化 ---- */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---- 减少运动偏好支持 ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---- 高性能动画提示 ---- */
+.animate-will-change {
+  will-change: transform, opacity;
+}
+.animate-will-change:hover {
+  will-change: auto;
+}

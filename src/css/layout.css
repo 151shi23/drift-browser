@@ -1,0 +1,323 @@
+/* ==================== 主体布局 ==================== */
+#main{display:flex;height:calc(100vh - var(--tb-h) - var(--bar-h) - 2px);position:relative}
+
+/* 书签栏 */
+.bookmark-bar{
+  height:0;
+  background:var(--bg-1);
+  border-bottom:1px solid transparent;
+  display:flex;
+  align-items:center;
+  padding:0 8px;
+  overflow:hidden;
+  transition:all 0.2s ease;
+}
+.bookmark-bar.visible{
+  height:28px;
+  border-bottom-color:var(--border);
+}
+.bookmark-bar-content{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:2px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:none;
+}
+.bookmark-bar-content::-webkit-scrollbar{
+  display:none;
+}
+.bookmark-item{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:4px 8px;
+  border-radius:4px;
+  font-size:12px;
+  color:var(--fg-1);
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all 0.1s;
+}
+.bookmark-item:hover{
+  background:var(--glass-hover);
+  color:var(--fg-0);
+}
+.bookmark-item img{
+  width:14px;
+  height:14px;
+  border-radius:2px;
+}
+.bookmark-item svg{
+  width:14px;
+  height:14px;
+  color:var(--fg-2);
+}
+.bookmark-bar-more{
+  padding:4px 8px;
+  background:none;
+  border:none;
+  color:var(--fg-2);
+  cursor:pointer;
+  border-radius:4px;
+  transition:all 0.1s;
+}
+.bookmark-bar-more:hover{
+  background:var(--glass-hover);
+  color:var(--fg-0);
+}
+
+/* ==================== 垂直标签栏模式（CSS Grid 布局）==================== */
+
+/*
+  布局结构：
+  +----------+-------------------------------+
+  |          |  #toolbar                     |
+  |  #title  +-------------------------------+
+  |  bar     |  #bookmarkBar                 |
+  |  (垂直   +-------------------------------+
+  |  标签)   |  #main (内容区)               |
+  |          |                               |
+  | [最小化] |                               |
+  | [最大化] |                               |
+  | [关闭]   |                               |
+  +----------+-------------------------------+
+*/
+
+body.vertical-tabs {
+  --vt-w: 220px;
+  display: grid !important;
+  grid-template-columns: var(--vt-w) 1fr;
+  grid-template-rows: auto auto 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ---- 标题栏 → 左侧垂直标签栏 ---- */
+body.vertical-tabs #titlebar,
+body.vertical-tabs #titleBar {
+  grid-column: 1;
+  grid-row: 1 / 4;
+  flex-direction: column;
+  width: var(--vt-w);
+  height: 100vh !important;
+  padding: 0;
+  border-right: 1px solid var(--border);
+  border-bottom: none;
+  position: relative;
+  overflow: hidden;
+}
+
+body.vertical-tabs .tb-left {
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+body.vertical-tabs .app-icon {
+  margin: 8px auto 4px;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+body.vertical-tabs .tab-scroll-btn {
+  display: none !important;
+}
+
+body.vertical-tabs #tabStrip {
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 6px;
+  gap: 2px;
+  width: 100%;
+  scrollbar-width: thin;
+  -webkit-app-region: no-drag;
+}
+
+body.vertical-tabs #tabStrip::-webkit-scrollbar {
+  width: 4px;
+  display: block;
+}
+
+body.vertical-tabs #tabStrip::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body.vertical-tabs #tabStrip::-webkit-scrollbar-thumb {
+  background: var(--fg-2);
+  border-radius: 2px;
+  opacity: 0.3;
+}
+
+body.vertical-tabs #tabStrip::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-1);
+}
+
+body.vertical-tabs .tab-item {
+  width: 100%;
+  min-width: unset;
+  max-width: unset;
+  height: 34px;
+  border-radius: 6px;
+  margin-bottom: 1px;
+  padding: 0 10px;
+  -webkit-app-region: no-drag;
+}
+
+body.vertical-tabs .tab-item.active {
+  background: var(--accent-dim);
+  color: var(--fg-0);
+}
+
+body.vertical-tabs .tab-item.active::after {
+  display: none;
+}
+
+body.vertical-tabs .tab-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+  border-radius: 0 2px 2px 0;
+}
+
+body.vertical-tabs .tab-title {
+  font-size: 12px;
+}
+
+body.vertical-tabs .tab-close {
+  opacity: 0;
+}
+
+body.vertical-tabs .tab-item:hover .tab-close {
+  opacity: 0.6;
+}
+
+body.vertical-tabs .tab-close:hover {
+  opacity: 1 !important;
+}
+
+body.vertical-tabs #btnNewTab {
+  width: calc(100% - 12px);
+  margin: 2px 6px 6px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--glass);
+  border: 1px dashed var(--border);
+  flex-shrink: 0;
+  -webkit-app-region: no-drag;
+}
+
+body.vertical-tabs #btnNewTab:hover {
+  background: var(--glass-hover);
+  border-color: var(--accent);
+}
+
+/* 窗口控制按钮移到垂直标签栏底部 */
+body.vertical-tabs .tb-right {
+  width: 100%;
+  height: auto;
+  flex-direction: row;
+  justify-content: flex-end;
+  background: transparent;
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+  border-left: none;
+  border-radius: 0;
+  padding: 0;
+  flex-shrink: 0;
+  -webkit-app-region: no-drag;
+}
+
+body.vertical-tabs .win-btn {
+  width: 100%;
+  height: 32px;
+  flex: 1;
+}
+
+/* ---- 工具栏 ---- */
+body.vertical-tabs #toolbar {
+  grid-column: 2;
+  grid-row: 1;
+  width: auto;
+}
+
+/* ---- 书签栏 ---- */
+body.vertical-tabs #bookmarkBar {
+  grid-column: 2;
+  grid-row: 2;
+  width: auto;
+}
+
+/* ---- 进度条 / 查找栏等浮动元素 ---- */
+body.vertical-tabs #progressBar,
+body.vertical-tabs #findBar,
+body.vertical-tabs #zoomIndicator,
+body.vertical-tabs #certErrorBar {
+  grid-column: 2;
+}
+
+/* ---- 内容区 ---- */
+body.vertical-tabs #main {
+  grid-column: 2;
+  grid-row: 3;
+  width: auto;
+  height: auto;
+}
+
+/* 侧边栏 */
+.side-panel{width:0;overflow:hidden;background:var(--bg-1);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width .2s ease;flex-shrink:0}
+.side-panel.open{width:var(--side-w)}
+
+.sp-header-bar{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.sp-tabs{display:flex;flex:1}
+.sp-tab{flex:1;padding:10px 0;display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;color:var(--fg-2);border-bottom:2px solid transparent;transition:all .12s}
+.sp-tab:hover{color:var(--fg-1)}
+.sp-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.sp-close-btn{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  color:var(--fg-2);background:transparent;border:none;
+  border-radius:6px;margin:4px;cursor:pointer;
+  transition:all .15s;
+}
+.sp-close-btn:hover{background:var(--glass-hover);color:var(--fg-0)}
+.sp-close-btn:active{transform:scale(0.9)}
+
+.sp-content{flex:1;overflow-y:auto;scrollbar-width:thin}
+.sp-section{display:none;padding:8px}
+.sp-section.active{display:block}
+
+.sp-header{display:flex;justify-content:space-between;align-items:center;padding:6px 4px;font-size:12px;color:var(--fg-1);font-weight:600}
+.sp-action{font-size:11px;color:var(--fg-2);padding:2px 8px;border-radius:4px;transition:all .12s}
+.sp-action:hover{background:var(--glass-hover);color:var(--fg-0)}
+
+.sp-list{display:flex;flex-direction:column;gap:1px}
+.sp-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:12px;color:var(--fg-1);cursor:pointer;transition:background .1s;overflow:hidden}
+.sp-item:hover{background:var(--glass-hover);color:var(--fg-0)}
+.sp-item-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-item-del{opacity:0;color:var(--fg-2);transition:opacity .1s}
+.sp-item:hover .sp-item-del{opacity:1}
+.sp-item-del:hover{color:var(--red)}
+
+.setting-item{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;font-size:13px;color:var(--fg-1)}
+.setting-item select{width:100px}
+
+/* 内容区 */
+#contentArea{flex:1;position:relative;overflow:hidden}
+.view{position:absolute;inset:0;display:none;opacity:0;transition:opacity 0.25s cubic-bezier(0.16,1,0.3,1)}
+.view.active{display:flex;opacity:1;animation:viewEnter 0.3s cubic-bezier(0.16,1,0.3,1) both}
+@keyframes viewEnter{
+  from{opacity:0}
+  to{opacity:1}
+}

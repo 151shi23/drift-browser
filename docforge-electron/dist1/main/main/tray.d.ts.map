@@ -1,0 +1,1 @@
+{"version":3,"file":"tray.d.ts","sourceRoot":"","sources":["../../../src/main/tray.ts"],"names":[],"mappings":"AAAA,OAAO,EAAgC,aAAa,EAAE,MAAM,UAAU,CAAC;AAGvE,qBAAa,YAAY;IACvB,OAAO,CAAC,IAAI,CAAqB;IAEjC,MAAM,CAAC,QAAQ,EAAE,MAAM,EAAE,UAAU,EAAE,aAAa,GAAG,IAAI;IA4CzD,OAAO,IAAI,IAAI;CAMhB"}

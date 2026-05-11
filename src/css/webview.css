@@ -1,0 +1,90 @@
+/* ==================== webview 容器 ==================== */
+/* webviewHost 独立于 #main，避免全局 CSS 污染内部页面 */
+#webviewHost{
+  position:fixed;
+  top:calc(var(--tb-h) + var(--bar-h) + 2px);
+  left:0;
+  right:0;
+  bottom:0;
+  display:none;
+  z-index:1;
+  transition:left .2s ease, opacity 0.2s cubic-bezier(0.16,1,0.3,1);
+  overflow:hidden;
+  opacity:0;
+  background:var(--bg-0);
+}
+#webviewHost.active{display:block;opacity:1}
+#webviewHost.shifted{left:var(--side-w)}
+#webviewHost webview{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:none;
+  border:none;
+  flex:1;
+  opacity:0;
+  transition:opacity 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+#webviewHost webview.visible{display:flex;opacity:1}
+#webviewHost webview.loading{opacity:0.5}
+
+/* 垂直标签栏模式 - webview 偏移 */
+body.vertical-tabs #webviewHost{
+  left:var(--vt-w);
+}
+
+/* webview 加载骨架屏 */
+.webview-skeleton{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg,var(--bg-0) 8%,var(--bg-1) 18%,var(--bg-0) 33%);
+  background-size:200% 100%;
+  animation:skeletonShimmer 1.5s linear infinite;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.3s;
+  z-index:5;
+}
+.webview-skeleton.active{opacity:1}
+@keyframes skeletonShimmer{
+  to{background-position:-200% 0}
+}
+
+/* webview 加载进度脉冲 */
+.webview-loading-indicator{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);
+  opacity:0;
+  z-index:10;
+  transition:opacity 0.3s;
+  animation:loadPulse 1.5s ease-in-out infinite;
+}
+.webview-loading-indicator.active{opacity:1}
+@keyframes loadPulse{
+  0%,100%{transform:translateX(-30%);opacity:0.5}
+  50%{transform:translateX(30%);opacity:1}
+}
+
+/* 全屏优化 - 隐藏标题栏和工具栏 */
+body.fullscreen-active #titlebar,
+body.fullscreen-active #toolbar{
+  display:none!important;
+}
+body.fullscreen-active #webviewHost{
+  top:0!important;
+}
+
+/* 崩溃/无响应标签样式 */
+.tab-item.crashed .tab-title{color:var(--red)}
+.tab-item.crashed .tab-favicon{filter:grayscale(1)}
+.tab-item.unresponsive .tab-title{opacity:0.5;animation:unresponsivePulse 1s ease-in-out infinite}
+@keyframes unresponsivePulse{
+  0%,100%{opacity:0.5}
+  50%{opacity:0.3}
+}

@@ -1,0 +1,320 @@
+/* ==================== 任务管理器标签页 ==================== */
+.tm-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 16px;
+}
+
+.tm-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tm-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--fg-0);
+}
+
+.tm-title svg {
+  color: var(--accent);
+}
+
+.tm-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.tm-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 16px;
+  background: var(--bg-2);
+  border-radius: 8px;
+}
+
+.tm-stat-label {
+  font-size: 11px;
+  color: var(--fg-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tm-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fg-0);
+  margin-top: 2px;
+}
+
+.tm-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.tm-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-1);
+  color: var(--fg-1);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tm-btn:hover {
+  background: var(--bg-2);
+  color: var(--fg-0);
+}
+
+.tm-btn.danger {
+  border-color: rgba(232, 64, 87, 0.3);
+  color: var(--red);
+}
+
+.tm-btn.danger:hover {
+  background: rgba(232, 64, 87, 0.1);
+}
+
+.tm-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tm-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  color: var(--fg-2);
+}
+
+.tm-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+
+.tm-item:hover {
+  background: var(--bg-2);
+  border-color: var(--accent);
+}
+
+.tm-item-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+.tm-item-info {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.tm-item-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg-0);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tm-item-url {
+  font-size: 11px;
+  color: var(--fg-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.tm-item-memory {
+  font-size: 12px;
+  color: var(--fg-2);
+  padding: 4px 10px;
+  background: var(--bg-2);
+  border-radius: 4px;
+}
+
+.tm-item-memory.frozen{
+  color:#22c55e;
+  font-weight:500;
+}
+
+/* 冻结标签页样式 */
+.tm-item.frozen{
+  opacity:0.7;
+  background:var(--bg-2);
+}
+.tm-item.frozen .tm-item-title{
+  color:var(--fg-2);
+}
+.tm-item.frozen:hover{
+  opacity:1;
+  background:var(--bg-1);
+}
+
+.tm-item-close {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--fg-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.15s;
+}
+
+.tm-item-close:hover {
+  background: rgba(232, 64, 87, 0.15);
+  color: var(--red);
+}
+
+/* ==================== 性能监视器标签页 ==================== */
+.perf-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+}
+
+.perf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.perf-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--fg-0);
+}
+
+.perf-title svg {
+  color: var(--accent);
+}
+
+.perf-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-1);
+  color: var(--fg-1);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.perf-btn:hover {
+  background: var(--bg-2);
+  color: var(--fg-0);
+}
+
+.perf-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.perf-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.perf-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--fg-2);
+}
+
+.perf-card-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.perf-chart {
+  flex: 1;
+  min-height: 80px;
+  background: var(--bg-2);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.perf-chart-bar {
+  position: absolute;
+  bottom: 0;
+  width: 8px;
+  background: linear-gradient(to top, var(--accent), rgba(74, 144, 217, 0.3));
+  border-radius: 2px 2px 0 0;
+  transition: height 0.3s;
+}
+
+.perf-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.perf-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-2);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.perf-info-row span:first-child {
+  color: var(--fg-2);
+}
+
+.perf-info-row span:last-child {
+  color: var(--fg-0);
+  font-weight: 500;
+}

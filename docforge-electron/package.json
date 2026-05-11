@@ -1,0 +1,96 @@
+{
+  "name": "docforge-electron",
+  "version": "1.0.0",
+  "description": "DocForge - 离线/在线全能文档编辑器 Electron 插件 (Word/PDF编辑 + 云协作)",
+  "main": "dist/main/index.js",
+  "types": "dist/main/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && webpack --mode production",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "webpack --mode production",
+    "dev": "concurrently \"tsc -p tsconfig.main.json -w\" \"webpack serve --mode development\"",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder"
+  },
+  "keywords": [
+    "electron",
+    "document-editor",
+    "word-editor",
+    "pdf-viewer",
+    "collaboration",
+    "offline-editor"
+  ],
+  "author": "DocForge",
+  "license": "MIT",
+  "dependencies": {
+    "@tiptap/extension-character-count": "^2.6.6",
+    "@tiptap/extension-code-block-lowlight": "^2.6.6",
+    "@tiptap/extension-color": "^2.6.6",
+    "@tiptap/extension-font-family": "^2.6.6",
+    "@tiptap/extension-highlight": "^2.6.6",
+    "@tiptap/extension-image": "^2.6.6",
+    "@tiptap/extension-link": "^2.6.6",
+    "@tiptap/extension-placeholder": "^2.6.6",
+    "@tiptap/extension-subscript": "^2.6.6",
+    "@tiptap/extension-superscript": "^2.6.6",
+    "@tiptap/extension-table": "^2.6.6",
+    "@tiptap/extension-table-cell": "^2.6.6",
+    "@tiptap/extension-table-header": "^2.6.6",
+    "@tiptap/extension-table-row": "^2.6.6",
+    "@tiptap/extension-task-item": "^2.6.6",
+    "@tiptap/extension-task-list": "^2.6.6",
+    "@tiptap/extension-text-align": "^2.6.6",
+    "@tiptap/extension-text-style": "^2.6.6",
+    "@tiptap/extension-underline": "^2.6.6",
+    "@tiptap/pm": "^2.6.6",
+    "@tiptap/react": "^2.6.6",
+    "@tiptap/starter-kit": "^2.6.6",
+    "docx": "^8.5.0",
+    "highlight.js": "^11.9.0",
+    "lowlight": "^3.1.0",
+    "mammoth": "^1.6.0",
+    "pdfjs-dist": "^3.11.174",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "uuid": "^9.0.1",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@types/uuid": "^9.0.7",
+    "concurrently": "^8.2.2",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^6.9.1",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "html-webpack-plugin": "^5.6.0",
+    "mini-css-extract-plugin": "^2.7.7",
+    "style-loader": "^3.3.4",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.2"
+  },
+  "peerDependencies": {
+    "electron": ">=20.0.0"
+  },
+  "build": {
+    "appId": "com.docforge.electron-plugin",
+    "productName": "DocForge",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*"
+    ]
+  }
+}

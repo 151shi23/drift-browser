@@ -1,0 +1,9 @@
+/* ==================== 响应式适配 ==================== */
+@media(max-width:800px){
+  .home-sites{grid-template-columns:repeat(3,1fr)}
+  .home-time{font-size:80px;letter-spacing:-4px}
+}
+@media(max-width:500px){
+  .home-sites{grid-template-columns:repeat(2,1fr)}
+  .home-time{font-size:56px}
+}

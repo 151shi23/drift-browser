@@ -1,0 +1,68 @@
+{
+  "name": "f-browser",
+  "version": "2.33.0",
+  "description": "Drift 浏览器 - 独具一格的桌面浏览器",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win"
+  },
+  "author": "Drift Browser Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^26.8.1"
+  },
+  "build": {
+    "appId": "com.drift.browser",
+    "productName": "Drift 浏览器",
+    "electronDist": "node_modules/electron/dist",
+    "electronVersion": "33.4.11",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "src/assets/icon.png",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "protocols": [
+      {
+        "name": "HTTP Protocol",
+        "schemes": ["http", "https"]
+      },
+      {
+        "name": "Email Protocol",
+        "schemes": ["mailto"]
+      },
+      {
+        "name": "Drift Protocol",
+        "schemes": ["drift"]
+      }
+    ],
+    "files": [
+      "main.js",
+      "main/**/*",
+      "preload.js",
+      "src/**/*",
+      "plugins/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "asar": true,
+    "asarUnpack": [
+      "plugins/**/*"
+    ]
+  },
+  "dependencies": {
+    "sql.js": "^1.14.1"
+  }
+}

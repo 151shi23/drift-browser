@@ -1,0 +1,13 @@
+{
+  "id": "com.drift.github-zh",
+  "name": "GitHub 中文翻译",
+  "version": "1.0.0",
+  "description": "将 GitHub 页面 UI 文本和状态标签翻译为中文",
+  "author": "Drift Team",
+  "type": ["feature"],
+  "permissions": ["tabs", "storage"],
+  "renderer": "renderer.js",
+  "inject": "inject.js",
+  "minVersion": "2.33.0",
+  "dependencies": []
+}

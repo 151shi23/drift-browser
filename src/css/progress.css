@@ -1,0 +1,37 @@
+/* ==================== 进度条 ==================== */
+#progressBar{
+  height:2px;position:relative;z-index:10;background:var(--bg-1);
+  overflow:hidden;
+}
+#progressFill{
+  height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:1px;
+  transition:width 0.3s cubic-bezier(0.16,1,0.3,1);
+  position:relative;
+  box-shadow:0 0 8px var(--accent);
+}
+#progressFill::after{
+  content:'';position:absolute;right:0;top:-2px;bottom:-2px;width:4px;
+  background:#fff;border-radius:2px;opacity:0.6;
+  animation:progressGlow 1s ease-in-out infinite;
+}
+@keyframes progressGlow{
+  0%,100%{opacity:0.4;box-shadow:0 0 4px var(--accent)}
+  50%{opacity:0.8;box-shadow:0 0 12px var(--accent)}
+}
+
+/* 加载状态指示器 */
+#progressBar.loading{
+  background:var(--bg-1);
+  position:relative;
+}
+#progressBar.loading::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);
+  animation:progressShimmer 1.5s linear infinite;
+}
+@keyframes progressShimmer{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(100%)}
+}

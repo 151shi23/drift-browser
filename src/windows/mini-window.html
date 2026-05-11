@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小窗模式</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg-0: #1a1a1a;
+      --bg-1: #252525;
+      --bg-2: #333;
+      --fg-0: #fff;
+      --fg-1: #ccc;
+      --fg-2: #888;
+      --border: #444;
+    }
+    
+    [data-theme="light"] {
+      --bg-0: #f5f5f7;
+      --bg-1: #ffffff;
+      --bg-2: #e8e8ed;
+      --fg-0: #1a1a1a;
+      --fg-1: #4a4a4a;
+      --fg-2: #8a8a8a;
+      --border: #d1d1d6;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-0);
+      color: var(--fg-0);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .mini-header {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--border);
+      -webkit-app-region: drag;
+      gap: 8px;
+    }
+    
+    .mini-logo {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #4A90D9, #6C5CE7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+    }
+    
+    .mini-title {
+      flex: 1;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--fg-1);
+    }
+    
+    .mini-controls {
+      display: flex;
+      gap: 4px;
+      -webkit-app-region: no-drag;
+    }
+    
+    .mini-btn {
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--fg-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    
+    .mini-btn:hover {
+      background: var(--bg-2);
+      color: var(--fg-0);
+    }
+    
+    .mini-btn.close:hover {
+      background: #e04343;
+      color: #fff;
+    }
+    
+    .mini-content {
+      flex: 1;
+      position: relative;
+      background: #000;
+    }
+    
+    .mini-content webview {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .mini-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-0);
+    }
+    
+    .mini-loading::after {
+      content: '';
+      width: 32px;
+      height: 32px;
+      border: 3px solid #333;
+      border-top-color: #4A90D9;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <script>
+    // 同步初始化主题（避免闪烁）
+    const { ipcRenderer } = require('electron');
+    ipcRenderer.invoke('get-theme').then(theme => {
+      document.body.dataset.theme = theme;
+    }).catch(() => {});
+  </script>
+  <div class="mini-header">
+    <div class="mini-logo">D</div>
+    <div class="mini-title" id="miniTitle">加载中...</div>
+    <div class="mini-controls">
+      <button class="mini-btn" id="btnBack" title="后退">
+        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M9 3L5 7l4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <button class="mini-btn" id="btnForward" title="前进">
+        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M5 3l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <button class="mini-btn" id="btnRefresh" title="刷新">
+        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M12 7A5 5 0 1 1 7 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 2v5h-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="mini-btn close" id="btnClose" title="关闭">
+        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 3l8 8M11 3l-8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mini-content">
+    <div class="mini-loading" id="miniLoading"></div>
+    <webview id="miniWebview" allowpopups></webview>
+  </div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+    
+    const webview = document.getElementById('miniWebview');
+    const titleEl = document.getElementById('miniTitle');
+    const loadingEl = document.getElementById('miniLoading');
+    
+    // 获取传入的 URL
+    const url = new URLSearchParams(window.location.search).get('url');
+    
+    if (url) {
+      webview.src = url;
+    }
+    
+    // 页面标题更新
+    webview.addEventListener('page-title-updated', (e) => {
+      titleEl.textContent = e.title;
+      ipcRenderer.send('mini-window-title', e.title);
+    });
+    
+    // 加载状态
+    webview.addEventListener('did-start-loading', () => {
+      loadingEl.style.display = 'flex';
+    });
+    
+    webview.addEventListener('did-stop-loading', () => {
+      loadingEl.style.display = 'none';
+    });
+    
+    webview.addEventListener('dom-ready', () => {
+      loadingEl.style.display = 'none';
+    });
+    
+    // 控制按钮
+    document.getElementById('btnBack').addEventListener('click', () => {
+      if (webview.canGoBack()) webview.goBack();
+    });
+    
+    document.getElementById('btnForward').addEventListener('click', () => {
+      if (webview.canGoForward()) webview.goForward();
+    });
+    
+    document.getElementById('btnRefresh').addEventListener('click', () => {
+      webview.reload();
+    });
+    
+    document.getElementById('btnClose').addEventListener('click', () => {
+      ipcRenderer.send('close-mini-window');
+    });
+    
+    // 新窗口在主窗口打开
+    webview.addEventListener('new-window', (e) => {
+      e.preventDefault();
+      ipcRenderer.send('open-url-in-main', e.url);
+    });
+  </script>
+</body>
+</html>

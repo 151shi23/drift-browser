@@ -1,0 +1,44 @@
+/* ==================== CSS 变量 ==================== */
+:root {
+  --bg-0: #08080c;
+  --bg-1: #101016;
+  --bg-2: #1a1a22;
+  --bg-3: #24242e;
+  --fg-0: #e8e8f0;
+  --fg-1: #9090a8;
+  --fg-2: #56566a;
+  --accent: #4A90D9;
+  --accent2: #6C5CE7;
+  --accent-dim: rgba(74,144,217,0.12);
+  --red: #e84057;
+  --border: rgba(255,255,255,0.06);
+  --glass: rgba(255,255,255,0.04);
+  --glass-hover: rgba(255,255,255,0.07);
+  --radius: 8px;
+  --tb-h: 40px;
+  --bar-h: 42px;
+  --side-w: 280px;
+}
+[data-theme="light"] {
+  --bg-0: #f4f4f8;
+  --bg-1: #ffffff;
+  --bg-2: #eaeaf0;
+  --bg-3: #dcdce6;
+  --fg-0: #16162a;
+  --fg-1: #6a6a80;
+  --fg-2: #9a9ab0;
+  --accent: #4A90D9;
+  --accent2: #6C5CE7;
+  --accent-dim: rgba(74,144,217,0.08);
+  --border: rgba(0,0,0,0.06);
+  --glass: rgba(0,0,0,0.03);
+  --glass-hover: rgba(0,0,0,0.06);
+}
+
+/* ==================== 全局重置 ==================== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg-0);color:var(--fg-0);overflow:hidden;height:100vh;-webkit-user-select:none;user-select:none}
+input,select{font-family:inherit;color:var(--fg-0);background:var(--bg-2);border:1px solid var(--border);outline:none;border-radius:6px;padding:6px 10px;font-size:13px}
+input::placeholder{color:var(--fg-2)}
+select{cursor:pointer;-webkit-appearance:none}
+button{border:none;background:none;color:inherit;cursor:pointer;font-family:inherit}
