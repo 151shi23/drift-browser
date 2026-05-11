@@ -1,14 +1,20 @@
-# Drift Browser
+# 🌊 Drift Browser
 
 <p align="center">
-  <strong>独具一格的桌面浏览器</strong> / <strong>A Distinctive Desktop Browser</strong>
+  <strong>AI 驱动的新一代桌面浏览器 · Built with AI</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.33.0-blue" alt="version">
+  <img src="assets/screenshots/hero.png" width="800" alt="Drift Browser Screenshot">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-2.33.1-blue" alt="version">
   <img src="https://img.shields.io/badge/Electron-33-green" alt="electron">
   <img src="https://img.shields.io/badge/license-MIT-orange" alt="license">
   <img src="https://img.shields.io/badge/platform-Windows-lightgrey" alt="platform">
+  <a href="https://github.com/151shi23/drift-browser/stargazers"><img src="https://img.shields.io/github/stars/151shi23/drift-browser?style=social" alt="Stars"></a>
+  <a href="https://github.com/151shi23/drift-browser/forks"><img src="https://img.shields.io/github/forks/151shi23/drift-browser?style=social" alt="Forks"></a>
 </p>
 
 ---
